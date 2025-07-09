@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Home | Secure File System</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2rem;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      margin-bottom: 30px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #0047ab;
+      color: white;
+      padding: 10px 20px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #002f6c;
+    }
+
+    .message {
+      color: #d4ffdb;
+      margin-bottom: 20px;
+    }
+
+    .logout-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .file-list {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .file-item {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-name {
+      font-size: 0.95rem;
+    }
+
+    .decrypt-btn {
+      background-color: #00b894;
+      padding: 6px 14px;
+      font-size: 13px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .decrypt-btn:hover {
+      background-color: #00997d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hello, {{ user.username }} 👋</h1>
+    <p>Securely upload and encrypt your files below:</p>
+
+    {% if message %}
+      <p class="message">{{ message }}</p>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.file }}
+      <br>
+      <button type="submit">Upload & Encrypt</button>
+    </form>
+
+    {% if uploaded_files %}
+      <div class="file-list">
+        <h3>Your Encrypted Files</h3>
+        {% for file in uploaded_files %}
+          <div class="file-item">
+            <span class="file-name">{{ file.original_filename }}</span>
+            <a href="{% url 'decrypt' file.id %}" target="_blank">
+              <button class="decrypt-btn">Decrypt & Preview</button>
+            </a>
+          </div>
+        {% empty %}
+          <p>No files uploaded yet.</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+  </div>
+</body>
+</html>
